@@ -7,6 +7,7 @@ export default function jwt() {
             '/api/ping',
             '/api/version',
             '/api/users/authenticate',
+            '/api/users/register',
         ]
     });
 }
