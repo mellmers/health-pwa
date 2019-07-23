@@ -4,15 +4,12 @@ import {SheetsRegistry} from 'jss';
 import JssProvider from 'react-jss/lib/JssProvider';
 import {createGenerateClassName, MuiThemeProvider,} from '@material-ui/core/styles';
 import {themeLight} from './utils/theme';
-import ApiMiddleware from './api/index';
 import ReduxServer from "@pawjs/redux/server";
 import ReduxReducers, {initialState as ReduxInitialState} from './redux/reducer';
 
 export default class Server {
 
     constructor({ addMiddleware, addPlugin }) {
-        addMiddleware(ApiMiddleware);
-
         const reduxServer = new ReduxServer({addPlugin});
         reduxServer.setReducers(ReduxReducers);
         addPlugin(reduxServer);

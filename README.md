@@ -16,10 +16,28 @@ git clone https://github.com/mellmers/health-pwa.git health-pwa && cd health-pwa
 npm install
 ```
 
-##### 2. Start the demo project
+##### 3. Start the project
 ```bash
 npm start
 ```
+
+### Production Startup
+
+##### 1. Build the application for production enviroment
+```bash
+npm run build
+```
+
+##### 2. Start production application
+```bash
+npm run startProduction
+```
+
+##### 3. Start API
+```bash
+npm run startApi
+```
+
 
 ### Material UI
 Visit [Material UI](https://material-ui.com/) for more details & documentation on Material UI  

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -14,13 +15,17 @@ let app = express();
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 mongoose.connection.once('open', function () {
     console.log('MongoDB connect successfully!');
+
+    app.listen(process.env.API_PORT, function () {
+        console.log("Running API on 127.0.0.1:" + process.env.API_PORT);
+    });
 });
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 //app.use(bodyParser.json());
 app.use(cors());
-// app.use('/api', jwt());
+app.use('/api', jwt());
 
 // api routes
 app.use('/api/users', UserController);
