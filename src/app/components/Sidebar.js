@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import {Typography, withStyles} from "@material-ui/core";
 
@@ -16,7 +18,6 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import InfoIcon from '@material-ui/icons/Info';
 import InvertedColorsIcon from '@material-ui/icons/InvertColors';
-
 const styles = theme => ({
     label: {
         display: 'inline-block'
@@ -38,29 +39,37 @@ class Sidebar extends React.Component {
     };
 
     render() {
-        const {classes} = this.props;
+        const {classes, user} = this.props;
         return (
             <React.Fragment>
                 <List>
-                    <ListItem button component="a" href="/dashboard">
+                    { user && user.name ? (
+                        <ListItem>
+                            <ListItemText
+                                primary="Eingeloggt als:"
+                                secondary={user.name}
+                            />
+                        </ListItem>
+                    ) : null}
+                    <ListItem button component={Link} to="/dashboard">
                         <ListItemIcon>
                             <DashboardIcon/>
                         </ListItemIcon>
                         <ListItemText primary="Dashboard"/>
                     </ListItem>
-                    <ListItem button component="a" href="/anmelden">
+                    <ListItem button component={Link} to="/anmelden">
                         <ListItemIcon>
                             <AccountBoxIcon/>
                         </ListItemIcon>
                         <ListItemText primary="Anmelden"/>
                     </ListItem>
-                    <ListItem button component="a" href="/daten">
-                        <ListItemIcon>
-                            <AssignmentIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="Daten erfassen"/>
+                    <ListItem button component={Link} to="/daten">
+                            <ListItemIcon>
+                                <AssignmentIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary="Daten erfassen"/>
                     </ListItem>
-                    <ListItem button component="a" href="/report" disabled>
+                    <ListItem button component={Link} to="/report" disabled>
                         <ListItemIcon>
                             <BarChartIcon/>
                         </ListItemIcon>
@@ -113,4 +122,9 @@ class Sidebar extends React.Component {
 Sidebar.propTypes = {
     onChangeTheme: PropTypes.func
 };
-export default withStyles(styles)(Sidebar);
+
+function mapStateToProps(state) {
+    return { user: state.application.user };
+}
+
+export default withStyles(styles)(connect(mapStateToProps)(Sidebar));

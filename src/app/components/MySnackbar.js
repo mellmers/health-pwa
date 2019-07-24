@@ -20,15 +20,19 @@ const variantIcon = {
 
 const styles = theme => ({
     success: {
+        color: '#fff',
         backgroundColor: '#43a047',
     },
     error: {
+        color: '#fff',
         backgroundColor: '#d32f2f',
     },
     info: {
+        color: '#fff',
         backgroundColor: '#1976d2',
     },
     warning: {
+        color: '#fff',
         backgroundColor: '#ffa000',
     },
     icon: {

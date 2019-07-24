@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -29,6 +30,7 @@ const styles = theme => ({
 class Anmelden extends React.Component {
 
     state = {
+        disabled: false,
         email: '',
         password: '',
         showPassword: false,
@@ -56,22 +58,26 @@ class Anmelden extends React.Component {
         event.preventDefault();
         const {email, password} = this.state;
 
+        this.setState({disabled: true});
+
         API.getInstance().login({
             email: email,
             password: password
         }).then(result => {
+            let newState = {};
+
             if (result.status === 'error') {
-                this.setState({
+                newState = {
                     snackbarOpen: true,
                     snackbarMessage: result.message,
                     snackbarVariant: 'error'
-                });
+                };
             } else if (result.status === 'success') {
-                this.setState({
+                newState = {
                     snackbarOpen: true,
                     snackbarMessage: 'Erfolgreich eingeloggt!',
                     snackbarVariant: 'success'
-                });
+                };
 
                 this.props.dispatch(login({
                     ...result.data.user,
@@ -81,12 +87,17 @@ class Anmelden extends React.Component {
             } else {
                 console.log('We have a problem here, bro.');
             }
+
+            this.setState({
+                ...newState,
+                disabled: false
+            });
         });
     }
 
     render() {
         const {classes} = this.props;
-        const {email, password, showPassword, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
+        const {disabled, email, password, showPassword, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
 
         console.log(this.props.user);
 
@@ -123,10 +134,7 @@ class Anmelden extends React.Component {
                         )
                     }}
                 />
-                <Button type="submit" variant="contained" color="primary" size="large" className={classes.button}>
-                    {/*<SaveIcon className={classes.rightIcon} />*/}
-                    Anmelden
-                </Button>
+                <Button type="submit" variant="contained" color="primary" size="large" disabled={disabled}>{disabled ? 'Anmeldung läuft ...' : 'Anmelden'}</Button>
 
                 <MySnackbar
                     message={snackbarMessage}
