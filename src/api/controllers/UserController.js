@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 
 import UserModel from "../models/User";
+import BalanceModel from "../models/BalanceData";
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ const router = express.Router();
 router.post('/authenticate', authenticate);
 router.post('/register', create);
 router.get('/', getAll);
+router.get('/balancedata', getBalanceData);
 
 export default router;
 
@@ -71,6 +73,16 @@ function getAll(req, res, next) {
             res.status(400).json({status: 'error', message: 'Cannot get all users'});
         } else if (users) {
             res.json({status: "success", message: "Got all users", data: {users: users}});
+        }
+    });
+}
+
+function getBalanceData(req, res, next) {
+    BalanceModel.find({ user: req.user.id }, (err, data) => {
+        if (err) {
+            res.status(400).json({status: 'error', message: 'Cannot get data'});
+        } else if (data) {
+            res.json({status: "success", message: "Got all balance data", data: {balanceData: data}});
         }
     });
 }

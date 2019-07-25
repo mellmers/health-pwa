@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {connect} from "react-redux";
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
 import SaveIcon from '@material-ui/icons/Save';
+
+import API from "../../utils/API";
+
 import MySnackbar from "../components/MySnackbar";
 
 const styles = theme => ({
@@ -27,12 +31,14 @@ const styles = theme => ({
 class Daten extends React.Component {
 
     state = {
-        name: '',
+        disabled: false,
         weight: '',
         fat: '',
         muscle: '',
         visceralFat: '',
-        snackbarOpen: false
+        snackbarMessage: '',
+        snackbarOpen: false,
+        snackbarVariant: 'success'
     };
 
     handleChange (prop, event) {
@@ -40,7 +46,6 @@ class Daten extends React.Component {
     }
 
     handleClose(event, reason) {
-        console.log(reason);
         if (reason === 'clickaway') {
             return;
         }
@@ -49,27 +54,62 @@ class Daten extends React.Component {
 
     onSubmit (event) {
         event.preventDefault();
-        this.setState({snackbarOpen: true});
+
+        if (this.props.user) {
+            this.setState({disabled: true});
+
+            const {weight, fat, muscle, visceralFat} = this.state;
+
+            API.getInstance()._fetch('/balancedata', 'POST', {
+                weight: weight,
+                fat: fat,
+                muscle: muscle,
+                visceralFat: visceralFat
+            }, null, {
+                "Authorization": "Bearer " + this.props.user.token
+            }).then(result => {
+                let newState = {};
+
+                if (result.status === 'error') {
+                    newState = {
+                        snackbarOpen: true,
+                        snackbarMessage: result.message,
+                        snackbarVariant: 'error'
+                    };
+                } else if (result.status === 'success') {
+                    newState = {
+                        snackbarOpen: true,
+                        snackbarMessage: 'Daten gespeichert!',
+                        snackbarVariant: 'success'
+                    };
+                } else {
+                    console.log('We have a problem here, bro.');
+                }
+
+                this.setState({
+                    ...newState,
+                    disabled: false
+                });
+            });
+        } else {
+            this.setState({
+                snackbarOpen: true,
+                snackbarMessage: 'Du musst dich erst einloggen!',
+                snackbarVariant: 'error'
+            });
+        }
     }
 
     render() {
         const {classes} = this.props;
-        const {name, weight, fat, muscle, visceralFat, snackbarOpen} = this.state;
+        const {weight, fat, muscle, visceralFat, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
 
         return (
-            <form noValidate autoComplete="off" onSubmit={this.onSubmit.bind(this)}>
+            <form autoComplete="off" onSubmit={this.onSubmit.bind(this)}>
                 <div className={classes.appBarSpacer}/>
                 <Typography variant="h4" gutterBottom component="h2">
                     Daten erfassen
                 </Typography>
-                <TextField
-                    id="name"
-                    className={classes.textField}
-                    variant="outlined"
-                    label="Name"
-                    value={name}
-                    onChange={this.handleChange.bind(this, 'name')}
-                />
                 <TextField
                     id="weight"
                     className={classes.textField}
@@ -80,6 +120,7 @@ class Daten extends React.Component {
                     InputProps={{
                         endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
                     }}
+                    required
                 />
                 <TextField
                     id="fat"
@@ -91,6 +132,7 @@ class Daten extends React.Component {
                     InputProps={{
                         endAdornment: <InputAdornment position="end">%</InputAdornment>,
                     }}
+                    required
                 />
                 <TextField
                     id="muscle"
@@ -102,6 +144,7 @@ class Daten extends React.Component {
                     InputProps={{
                         endAdornment: <InputAdornment position="end">%</InputAdornment>,
                     }}
+                    required
                 />
                 <TextField
                     id="visceralFat"
@@ -110,6 +153,7 @@ class Daten extends React.Component {
                     label="Viszeraler Fettwert"
                     value={visceralFat}
                     onChange={this.handleChange.bind(this, 'visceralFat')}
+                    required
                 />
                 <Button type="submit" variant="contained" color="primary" size="large" className={classes.button}>
                     <SaveIcon className={classes.rightIcon} />
@@ -117,27 +161,12 @@ class Daten extends React.Component {
                 </Button>
 
                 <MySnackbar
-                    message={
-                        "Gespeichert!"
-                    }
+                    message={snackbarMessage}
                     onClose={this.handleClose.bind(this)}
                     open={snackbarOpen}
-                    variant="success"
+                    variant={snackbarVariant}
                     includeCloseBtn
                 />
-                {/*<Snackbar*/}
-                    {/*autoHideDuration={4000}*/}
-                    {/*className={classes.snackbar}*/}
-                    {/*onClose={this.handleClose.bind(this)}*/}
-                    {/*open={snackbarOpen}*/}
-                {/*>*/}
-                    {/*<SnackbarContent*/}
-                        {/*className={classes.snackbarContent}*/}
-                        {/*message={*/}
-                            {/*"Gespeichert!"*/}
-                        {/*}*/}
-                    {/*/>*/}
-                {/*</Snackbar>*/}
             </form>
         );
     }
@@ -147,4 +176,8 @@ Daten.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Daten);
+function mapStateToProps(state) {
+    return { user: state.application.user };
+}
+
+export default withStyles(styles)(connect(mapStateToProps)(Daten));

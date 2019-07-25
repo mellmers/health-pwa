@@ -8,6 +8,7 @@ import errorHandler from './utils/errorHandler';
 import mongoose from './utils/database'; //database
 
 import UserController from './controllers/UserController';
+import BalanceDataController from "./controllers/BalanceController";
 
 let app = express();
 
@@ -23,12 +24,12 @@ mongoose.connection.once('open', function () {
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(bodyParser.json());
 app.use(cors());
 app.use('/api', jwt());
 
 // api routes
 app.use('/api/users', UserController);
+app.use('/api/balancedata', BalanceDataController);
 
 // global error handler
 app.use(errorHandler);

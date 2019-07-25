@@ -99,8 +99,6 @@ class Anmelden extends React.Component {
         const {classes} = this.props;
         const {disabled, email, password, showPassword, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
 
-        console.log(this.props.user);
-
         return (
             <form autoComplete="off" onSubmit={this.onSubmit.bind(this)}>
                 <div className={classes.appBarSpacer}/>
@@ -115,6 +113,7 @@ class Anmelden extends React.Component {
                     label="E-Mail"
                     value={email}
                     onChange={this.handleChange.bind(this, 'email')}
+                    required
                 />
                 <TextField
                     id="password"
@@ -133,6 +132,7 @@ class Anmelden extends React.Component {
                             </InputAdornment>
                         )
                     }}
+                    required
                 />
                 <Button type="submit" variant="contained" color="primary" size="large" disabled={disabled}>{disabled ? 'Anmeldung läuft ...' : 'Anmelden'}</Button>
 
