@@ -9,7 +9,7 @@ import ShareImg512 from './resources/img/icon-512x512.png';
 import SocialShareImg from './resources/img/Social-Share-Image.png';
 
 export default class Routes {
-    apply(routeHandler) {
+    apply(router) {
         const routes = [
             {
                 path: '/',
@@ -40,102 +40,99 @@ export default class Routes {
             },
         ];
 
-        routeHandler.hooks.initRoutes.tapPromise('AppRoutes', async () => {
-            routeHandler.addRoutes(routes);
-            routeHandler.setPwaSchema({
-                name: 'Health App',
-                short_name: 'Health',
-                dir: 'ltr',
-                lang: 'de-DE',
-                orientation: 'any',
-                start_url: '/examples/material-ui',
-                background_color: '#111',
-                theme_color: '#111',
-                display: 'standalone',
-                description: 'Gesundheitsdatenerfassung',
-                icons: [
-                    {
-                        src: ShareImg72,
-                        sizes: '72x72',
-                    },
-                    {
-                        src: ShareImg96,
-                        sizes: '96x96',
-                    },
-                    {
-                        src: ShareImg128,
-                        sizes: '128x128',
-                    },
-                    {
-                        src: ShareImg144,
-                        sizes: '144x144',
-                    },
-                    {
-                        src: ShareImg152,
-                        sizes: '152x152',
-                    },
-                    {
-                        src: ShareImg192,
-                        sizes: '192x192',
-                    },
-                    {
-                        src: ShareImg384,
-                        sizes: '384x384',
-                    },
-                    {
-                        src: ShareImg512,
-                        sizes: '512x512',
-                    },
-                ],
-            });
-            // eslint-disable-next-line
-            routeHandler.getDefaultSeoSchema = () => ({
-                title: 'Health App',
-                name: 'Health App',
-                description: 'Gesundheitsdatenerfassung',
-                type: 'website',
-                url: 'https://moritzellmers.de',
-                site_name: 'Health App',
-                image: SocialShareImg,
-                meta: [
-                    {
-                        name: 'author',
-                        content: 'Moritz Ellmers',
-                    },
-                    {
-                        name: 'description',
-                        content: 'Gesundheitsdatenerfassung',
-                    },
-                    {
-                        name: 'theme-color',
-                        content: '#111',
-                    },
-                    {
-                        name: 'apple-mobile-web-app-status-bar-style',
-                        content: '#111',
-                    },
-                    {
-                        name: 'msapplication-TileColor',
-                        content: '#111',
-                    },
-                    {
-                        name: 'application-name',
-                        content: 'Health App',
-                    },
-                    {
-                        name: 'generator',
-                        content: 'Gesundheit',
-                    },
-                    {
-                        name: 'apple-mobile-web-app-title',
-                        content: 'Health App',
-                    },
-                    {
-                        name: 'viewport',
-                        content: 'width=device-width, initial-scale=1, maximum-scale=5.0',
-                    },
-                ],
-            });
+        router.setPwaSchema({
+            name: 'Health App',
+            short_name: 'HealthApp',
+            dir: 'ltr',
+            lang: 'de-DE',
+            orientation: 'any',
+            start_url: '/daten',
+            background_color: '#111',
+            theme_color: '#111',
+            display: 'standalone',
+            description: 'Gesundheitsdatenerfassung',
+            icons: [
+                {
+                    src: ShareImg72,
+                    sizes: '72x72',
+                },
+                {
+                    src: ShareImg96,
+                    sizes: '96x96',
+                },
+                {
+                    src: ShareImg128,
+                    sizes: '128x128',
+                },
+                {
+                    src: ShareImg144,
+                    sizes: '144x144',
+                },
+                {
+                    src: ShareImg152,
+                    sizes: '152x152',
+                },
+                {
+                    src: ShareImg192,
+                    sizes: '192x192',
+                },
+                {
+                    src: ShareImg384,
+                    sizes: '384x384',
+                },
+                {
+                    src: ShareImg512,
+                    sizes: '512x512',
+                },
+            ],
+        });
+        // eslint-disable-next-line
+        router.getDefaultSeoSchema = () => ({
+            title: 'Health App',
+            name: 'Health App',
+            description: 'Gesundheitsdatenerfassung',
+            type: 'website',
+            url: 'https://health.moritzellmers.de',
+            site_name: 'Health App',
+            image: SocialShareImg,
+            meta: [
+                {
+                    name: 'author',
+                    content: 'Moritz Ellmers',
+                },
+                {
+                    name: 'description',
+                    content: 'Gesundheitsdatenerfassung',
+                },
+                {
+                    name: 'theme-color',
+                    content: '#111',
+                },
+                {
+                    name: 'apple-mobile-web-app-status-bar-style',
+                    content: '#111',
+                },
+                {
+                    name: 'msapplication-TileColor',
+                    content: '#111',
+                },
+                {
+                    name: 'application-name',
+                    content: 'Health App',
+                },
+                {
+                    name: 'generator',
+                    content: 'Gesundheit',
+                },
+                {
+                    name: 'apple-mobile-web-app-title',
+                    content: 'Health App',
+                },
+                {
+                    name: 'viewport',
+                    content: 'width=device-width, initial-scale=1, maximum-scale=5.0',
+                },
+            ],
         });
     }
 }
