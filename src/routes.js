@@ -86,8 +86,8 @@ export default class Routes {
                 },
             ],
         });
-        // eslint-disable-next-line
-        router.getDefaultSeoSchema = () => ({
+
+        router.setDefaultSeoSchema = () => ({
             title: 'Health App',
             name: 'Health App',
             description: 'Gesundheitsdatenerfassung',
@@ -133,6 +133,10 @@ export default class Routes {
                     content: 'width=device-width, initial-scale=1, maximum-scale=5.0',
                 },
             ],
+        });
+
+        router.hooks.initRoutes.tapPromise('AppRoutes', async () => {
+            router.addRoutes(routes);
         });
     }
 }
