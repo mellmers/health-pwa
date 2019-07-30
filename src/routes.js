@@ -87,56 +87,56 @@ export default class Routes {
             ],
         });
 
-        router.setDefaultSeoSchema = () => ({
-            title: 'Health App',
-            name: 'Health App',
-            description: 'Gesundheitsdatenerfassung',
-            type: 'website',
-            url: 'https://health.moritzellmers.de',
-            site_name: 'Health App',
-            image: SocialShareImg,
-            meta: [
-                {
-                    name: 'author',
-                    content: 'Moritz Ellmers',
-                },
-                {
-                    name: 'description',
-                    content: 'Gesundheitsdatenerfassung',
-                },
-                {
-                    name: 'theme-color',
-                    content: '#111',
-                },
-                {
-                    name: 'apple-mobile-web-app-status-bar-style',
-                    content: '#111',
-                },
-                {
-                    name: 'msapplication-TileColor',
-                    content: '#111',
-                },
-                {
-                    name: 'application-name',
-                    content: 'Health App',
-                },
-                {
-                    name: 'generator',
-                    content: 'Gesundheit',
-                },
-                {
-                    name: 'apple-mobile-web-app-title',
-                    content: 'Health App',
-                },
-                {
-                    name: 'viewport',
-                    content: 'width=device-width, initial-scale=1, maximum-scale=5.0',
-                },
-            ],
-        });
-
         router.hooks.initRoutes.tapPromise('AppRoutes', async () => {
             router.addRoutes(routes);
+            // eslint-disable-next-line
+            router.getDefaultSeoSchema = () => ({
+                title: 'Health App',
+                name: 'Health App',
+                description: 'Gesundheitsdatenerfassung',
+                type: 'website',
+                url: 'https://health.moritzellmers.de',
+                site_name: 'Health App',
+                image: SocialShareImg,
+                meta: [
+                    {
+                        name: 'author',
+                        content: 'Moritz Ellmers',
+                    },
+                    {
+                        name: 'description',
+                        content: 'Gesundheitsdatenerfassung',
+                    },
+                    {
+                        name: 'theme-color',
+                        content: '#111',
+                    },
+                    {
+                        name: 'apple-mobile-web-app-status-bar-style',
+                        content: '#111',
+                    },
+                    {
+                        name: 'msapplication-TileColor',
+                        content: '#111',
+                    },
+                    {
+                        name: 'application-name',
+                        content: 'Health App',
+                    },
+                    {
+                        name: 'generator',
+                        content: 'Gesundheit',
+                    },
+                    {
+                        name: 'apple-mobile-web-app-title',
+                        content: 'Health App',
+                    },
+                    {
+                        name: 'viewport',
+                        content: 'width=device-width, initial-scale=1, maximum-scale=5.0',
+                    },
+                ],
+            });
         });
     }
 }
