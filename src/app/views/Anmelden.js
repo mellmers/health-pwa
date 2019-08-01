@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { withRouter } from 'react-router-dom';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -84,6 +85,10 @@ class Anmelden extends React.Component {
                     expiresIn: result.data.expiresIn,
                     token: result.data.token
                 }));
+
+                setTimeout(() => {
+                    this.props.history.push('/daten');
+                }, 1500);
             } else {
                 console.log('We have a problem here, bro.');
             }
@@ -156,4 +161,4 @@ function mapStateToProps(state) {
     return { user: state.application.user };
 }
 
-export default withStyles(styles)(connect(mapStateToProps)(Anmelden));
+export default withStyles(styles)(withRouter((connect(mapStateToProps)(Anmelden))));

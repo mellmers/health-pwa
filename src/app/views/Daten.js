@@ -120,6 +120,7 @@ class Daten extends React.Component {
                     InputProps={{
                         endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
                     }}
+                    type="number"
                     required
                 />
                 <TextField
@@ -132,6 +133,7 @@ class Daten extends React.Component {
                     InputProps={{
                         endAdornment: <InputAdornment position="end">%</InputAdornment>,
                     }}
+                    type="number"
                     required
                 />
                 <TextField
@@ -144,6 +146,7 @@ class Daten extends React.Component {
                     InputProps={{
                         endAdornment: <InputAdornment position="end">%</InputAdornment>,
                     }}
+                    type="number"
                     required
                 />
                 <TextField
@@ -153,6 +156,7 @@ class Daten extends React.Component {
                     label="Viszeraler Fettwert"
                     value={visceralFat}
                     onChange={this.handleChange.bind(this, 'visceralFat')}
+                    type="number"
                     required
                 />
                 <Button type="submit" variant="contained" color="primary" size="large" className={classes.button}>
