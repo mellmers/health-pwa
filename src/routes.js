@@ -21,11 +21,11 @@ export default class Routes {
                         exact: true,
                         component: import('./app/views/Dashboard'),
                     },
-                    {
-                        path: '/anmelden',
-                        exact: true,
-                        component: import('./app/views/Anmelden'),
-                    },
+                    // {
+                    //     path: '/anmelden',
+                    //     exact: true,
+                    //     component: import('./app/views/Anmelden'),
+                    // },
                     {
                         path: '/daten',
                         exact: true,

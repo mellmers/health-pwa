@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderRoutes } from "react-router-config";
 import PropTypes from 'prop-types';
+import {connect} from "react-redux";
 import classNames from 'classnames';
 import AppBar from '@material-ui/core/AppBar';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -13,14 +14,23 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {MuiThemeProvider, withStyles} from '@material-ui/core/styles';
-import Sidebar from '../components/Sidebar';
+
 import {themeDark, themeLight} from "../../utils/theme";
+
+import Sidebar from '../components/Sidebar';
+import Anmelden from "./Anmelden";
 
 const drawerWidth = 240;
 
 const styles = theme => ({
     root: {
         display: 'flex',
+    },
+    rootNoLogin: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh'
     },
     toolbar: {
         paddingRight: 24, // keep right padding when drawer closed
@@ -101,15 +111,15 @@ const styles = theme => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing.unit * 7,
+        width: theme.spacing(7),
         [theme.breakpoints.up('sm')]: {
-            width: theme.spacing.unit * 9,
+            width: theme.spacing(9),
         },
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
         height: '100vh',
         overflow: 'auto',
     },
@@ -123,9 +133,9 @@ class Home extends React.Component {
     };
 
     componentDidMount() {
-        if (this.props.location && this.props.location.pathname === "/") {
-            this.props.history.push("/dashboard");
-        }
+        // if (this.props.location && this.props.location.pathname === "/") {
+        //     this.props.history.push("/dashboard");
+        // }
 
         let open = this.state.open;
         if (window.outerWidth >= 600) {
@@ -151,12 +161,13 @@ class Home extends React.Component {
     };
 
     render() {
-        const {classes} = this.props;
-        const {loading} = this.state;
+        const {classes, user} = this.props;
+        const {loading, open} = this.state;
+        console.log(user);
         return (
             <MuiThemeProvider theme={this.state.isDarkTheme ? themeDark : themeLight}>
                 <CssBaseline/>
-                <div className={classes.root}>
+                <div className={classNames(classes.root, !user && classes.rootNoLogin)}>
                     {
                         loading ?
                             <div className={classes.loading}>
@@ -171,7 +182,7 @@ class Home extends React.Component {
                                 </Typography>
                                 <CircularProgress className={classes.circularProgress} />
                             </div>
-                            :
+                            : ( user ?
                             <React.Fragment>
                                 <AppBar
                                     position="absolute"
@@ -216,12 +227,12 @@ class Home extends React.Component {
                                         </IconButton>
                                     </div>
                                     <Divider/>
-                                    <Sidebar onChangeTheme={this.handleChangeTheme.bind(this)} />
+                                    <Sidebar onChangeTheme={this.handleChangeTheme.bind(this)} open={open} />
                                 </Drawer>
                                 <main className={classes.content}>
                                     {renderRoutes(this.props.route.routes)}
                                 </main>
-                            </React.Fragment>
+                            </React.Fragment> : <Anmelden/> )
                     }
                 </div>
             </MuiThemeProvider>
@@ -232,4 +243,7 @@ class Home extends React.Component {
 Home.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(Home);
+function mapStateToProps(state) {
+    return { user: state.application.user };
+}
+export default withStyles(styles)(connect(mapStateToProps)(Home));

@@ -19,6 +19,10 @@ import {login} from '../../redux/actions/ApplicationActions';
 
 const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
+    header: {
+        textAlign: 'center',
+        color: '#388e3c'
+    },
     textField: {
         marginTop: 16,
         marginBottom: 16,
@@ -86,9 +90,9 @@ class Anmelden extends React.Component {
                     token: result.data.token
                 }));
 
-                setTimeout(() => {
-                    this.props.history.push('/daten');
-                }, 1500);
+                // setTimeout(() => {
+                //     this.props.history.push('/daten');
+                // }, 1500);
             } else {
                 console.log('We have a problem here, bro.');
             }
@@ -106,6 +110,9 @@ class Anmelden extends React.Component {
 
         return (
             <form autoComplete="off" onSubmit={this.onSubmit.bind(this)}>
+                <Typography variant="h2" gutterBottom component="h2" className={classes.header}>
+                    Health App
+                </Typography>
                 <div className={classes.appBarSpacer}/>
                 <Typography variant="h4" gutterBottom component="h2">
                     Anmelden

@@ -39,11 +39,11 @@ class Sidebar extends React.Component {
     };
 
     render() {
-        const {classes, user} = this.props;
+        const {classes, open, user} = this.props;
         return (
             <React.Fragment>
                 <List>
-                    { user && user.name ? (
+                    { open && user && user.name ? (
                         <ListItem>
                             <ListItemText
                                 primary="Eingeloggt als:"
@@ -57,12 +57,12 @@ class Sidebar extends React.Component {
                         </ListItemIcon>
                         <ListItemText primary="Dashboard"/>
                     </ListItem>
-                    <ListItem button component={Link} to="/anmelden">
+                    {/*<ListItem button component={Link} to="/anmelden">
                         <ListItemIcon>
                             <AccountBoxIcon/>
                         </ListItemIcon>
                         <ListItemText primary="Anmelden"/>
-                    </ListItem>
+                    </ListItem>*/}
                     <ListItem button component={Link} to="/daten">
                             <ListItemIcon>
                                 <AssignmentIcon/>
@@ -120,7 +120,8 @@ class Sidebar extends React.Component {
 }
 
 Sidebar.propTypes = {
-    onChangeTheme: PropTypes.func
+    onChangeTheme: PropTypes.func,
+    open: PropTypes.bool
 };
 
 function mapStateToProps(state) {
