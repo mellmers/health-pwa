@@ -15,7 +15,8 @@ import MySnackbar from "../components/MySnackbar";
 const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
     button: {
-        width: '100%'
+        width: '100%',
+        marginBottom: 25
     },
     rightIcon: {
         marginRight: 15,
@@ -36,6 +37,7 @@ class Daten extends React.Component {
         fat: '',
         muscle: '',
         visceralFat: '',
+        sendingData: false,
         snackbarMessage: '',
         snackbarOpen: false,
         snackbarVariant: 'success'
@@ -56,7 +58,7 @@ class Daten extends React.Component {
         event.preventDefault();
 
         if (this.props.user) {
-            this.setState({disabled: true});
+            this.setState({disabled: true, sendingData: true});
 
             const {weight, fat, muscle, visceralFat} = this.state;
 
@@ -88,7 +90,7 @@ class Daten extends React.Component {
 
                 this.setState({
                     ...newState,
-                    disabled: false
+                    sendingData: false
                 });
             });
         } else {
@@ -100,9 +102,24 @@ class Daten extends React.Component {
         }
     }
 
+    resetForm() {
+        this.setState({
+            disabled: false,
+            weight: '',
+            fat: '',
+            muscle: '',
+            visceralFat: ''
+        });
+    }
+
     render() {
         const {classes} = this.props;
-        const {weight, fat, muscle, visceralFat, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
+        const {disabled, weight, fat, muscle, visceralFat, sendingData, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
+
+        let resetBtn = null;
+        if (disabled && !sendingData) {
+            resetBtn = <Button variant="outlined" color="primary" size="large" className={classes.button} onClick={this.resetForm.bind(this)}>Zurücksetzen</Button>
+        }
 
         return (
             <form autoComplete="off" onSubmit={this.onSubmit.bind(this)}>
@@ -159,10 +176,12 @@ class Daten extends React.Component {
                     type="number"
                     required
                 />
-                <Button type="submit" variant="contained" color="primary" size="large" className={classes.button}>
+                <Button type="submit" variant="contained" color="primary" size="large" className={classes.button} disabled={disabled}>
                     <SaveIcon className={classes.rightIcon} />
-                    Speichern
+                    {sendingData ? 'Wird gespeichert ...' : 'Speichern'}
                 </Button>
+
+                {resetBtn}
 
                 <MySnackbar
                     message={snackbarMessage}

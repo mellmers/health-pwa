@@ -1,11 +1,8 @@
 import React from 'react';
 import JssProvider from 'react-jss/lib/JssProvider';
 import {createGenerateClassName} from '@material-ui/core/styles';
-import {themeLight} from './utils/theme';
 import ReduxClient from '@pawjs/redux/client';
 import ReduxReducers, {initialState as ReduxInitialState} from './redux/reducer';
-
-console.log(themeLight);
 
 export default class Client {
 
