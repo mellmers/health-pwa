@@ -139,6 +139,7 @@ class Daten extends React.Component {
                     }}
                     type="number"
                     required
+                    disabled={disabled}
                 />
                 <TextField
                     id="fat"
@@ -152,6 +153,7 @@ class Daten extends React.Component {
                     }}
                     type="number"
                     required
+                    disabled={disabled}
                 />
                 <TextField
                     id="muscle"
@@ -165,6 +167,7 @@ class Daten extends React.Component {
                     }}
                     type="number"
                     required
+                    disabled={disabled}
                 />
                 <TextField
                     id="visceralFat"
@@ -175,6 +178,7 @@ class Daten extends React.Component {
                     onChange={this.handleChange.bind(this, 'visceralFat')}
                     type="number"
                     required
+                    disabled={disabled}
                 />
                 <Button type="submit" variant="contained" color="primary" size="large" className={classes.button} disabled={disabled}>
                     <SaveIcon className={classes.rightIcon} />
@@ -184,6 +188,7 @@ class Daten extends React.Component {
                 {resetBtn}
 
                 <MySnackbar
+                    autoHideDuration={5000}
                     message={snackbarMessage}
                     onClose={this.handleClose.bind(this)}
                     open={snackbarOpen}
