@@ -10,9 +10,20 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
+import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 
 const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
+    cell: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    icon: {
+        marginLeft: 5
+    },
 });
 
 class Dashboard extends React.Component {
@@ -36,33 +47,53 @@ class Dashboard extends React.Component {
     }
 
     renderLastMeasures() {
-        let table = null;
-        const {balanceData} = this.state;
+        let table = null,
+            rows = [],
+            lastWeight = null,
+            lastFat = null,
+            lastMuscle = null,
+            lastVisceral = null;
+        const {balanceData} = this.state,
+            {classes} = this.props,
+            iconUp = <TrendingUpIcon className={classes.icon} color="primary"/>,
+            iconDown = <TrendingDownIcon className={classes.icon} color="error"/>,
+            iconNeutral = <TrendingFlatIcon className={classes.icon}/>;
 
         if (balanceData) {
+            balanceData.forEach(data => {
+                const {createdAt, weight, fat, muscle, visceralFat} = data;
+
+                rows.unshift(
+                    <TableRow key={createdAt}>
+                        <TableCell component="th" scope="row">
+                            {new Date(createdAt).toLocaleString()}
+                        </TableCell>
+                        <TableCell><div className={classes.cell}>{weight} {lastWeight ? lastWeight === weight ? iconNeutral : (lastWeight < weight ? iconDown : iconUp) : null}</div></TableCell>
+                        <TableCell><div className={classes.cell}>{fat} {lastFat ? lastFat === fat ? iconNeutral : (lastFat < fat ? iconDown : iconUp) : null}</div></TableCell>
+                        <TableCell><div className={classes.cell}>{muscle} {lastMuscle ? lastMuscle === muscle ? iconNeutral : (lastMuscle < muscle ? iconUp : iconDown) : null}</div></TableCell>
+                        <TableCell><div className={classes.cell}>{visceralFat} {lastVisceral ? lastVisceral === visceralFat ? iconNeutral : (lastVisceral < visceralFat ? iconDown : iconUp) : null}</div></TableCell>
+                    </TableRow>
+                );
+
+                lastWeight = weight;
+                lastFat = fat;
+                lastMuscle = muscle;
+                lastVisceral = visceralFat;
+            });
+
             table = (
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Datum</TableCell>
-                            <TableCell align="right">Gewicht (kg)</TableCell>
-                            <TableCell align="right">Fettanteil (%)</TableCell>
-                            <TableCell align="right">Muskelanteil (%)</TableCell>
-                            <TableCell align="right">Viszeraler Fettwert</TableCell>
+                            <TableCell>Gewicht (kg)</TableCell>
+                            <TableCell>Fettanteil (%)</TableCell>
+                            <TableCell>Muskelanteil (%)</TableCell>
+                            <TableCell>Viszeraler Fettwert</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {balanceData.map(data => (
-                            <TableRow key={data.createdAt}>
-                                <TableCell component="th" scope="row">
-                                    {new Date(data.createdAt).toLocaleString()}
-                                </TableCell>
-                                <TableCell align="right">{data.weight}</TableCell>
-                                <TableCell align="right">{data.fat}</TableCell>
-                                <TableCell align="right">{data.muscle}</TableCell>
-                                <TableCell align="right">{data.visceralFat}</TableCell>
-                            </TableRow>
-                        ))}
+                        {rows}
                     </TableBody>
                 </Table>
             );
