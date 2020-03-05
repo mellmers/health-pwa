@@ -69,11 +69,11 @@ class Sidebar extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="Daten erfassen"/>
                     </ListItem>
-                    <ListItem button component={Link} to="/report" disabled>
+                    <ListItem button component={Link} to="/report">
                         <ListItemIcon>
                             <BarChartIcon/>
                         </ListItemIcon>
-                        <ListItemText primary="Report"/>
+                        <ListItemText primary="Statistik"/>
                     </ListItem>
                 </List>
                 <Divider/>
