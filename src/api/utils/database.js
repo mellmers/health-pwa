@@ -5,6 +5,6 @@ let login = '';
 if (u && p) {
     login = u + ':' + p + '@';
 }
-mongoose.connect('mongodb://' + login + 'localhost/' + (process.env.DB_NAME || 'healthapp' + '?authSource=admin'), {useNewUrlParser: true});
+mongoose.connect('mongodb://' + login + 'localhost/' + (process.env.DB_NAME || 'healthapp') + '?authSource=admin', {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 export default mongoose;
