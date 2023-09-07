@@ -143,6 +143,7 @@ class Home extends React.Component {
         }
 
         this.setState({
+            isDarkTheme: localStorage.getItem('isDarkTheme') !== 'false',
             loading: false,
             open: open
         });
@@ -158,14 +159,14 @@ class Home extends React.Component {
 
     handleChangeTheme = isDarkTheme => {
         this.setState({isDarkTheme: isDarkTheme});
+        localStorage.setItem('isDarkTheme', isDarkTheme);
     };
 
     render() {
         const {classes, user} = this.props;
-        const {loading, open} = this.state;
-        console.log(user);
+        const {isDarkTheme, loading, open} = this.state;
         return (
-            <MuiThemeProvider theme={this.state.isDarkTheme ? themeDark : themeLight}>
+            <MuiThemeProvider theme={isDarkTheme ? themeDark : themeLight}>
                 <CssBaseline/>
                 <div className={classNames(classes.root, !user && classes.rootNoLogin)}>
                     {
@@ -227,7 +228,7 @@ class Home extends React.Component {
                                         </IconButton>
                                     </div>
                                     <Divider/>
-                                    <Sidebar onChangeTheme={this.handleChangeTheme.bind(this)} open={open} />
+                                    <Sidebar onChangeTheme={this.handleChangeTheme.bind(this)} isDarkTheme={isDarkTheme} open={open} />
                                 </Drawer>
                                 <main className={classes.content}>
                                     {renderRoutes(this.props.route.routes)}

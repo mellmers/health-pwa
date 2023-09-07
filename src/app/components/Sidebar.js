@@ -27,11 +27,11 @@ const styles = theme => ({
 class Sidebar extends React.Component {
 
     state = {
-        colorMode: true,
+        isDarkTheme: this.props.isDarkTheme,
     };
 
     handleChange = (event) => {
-        this.setState({ colorMode: event.target.checked });
+        this.setState({ isDarkTheme: event.target.checked });
 
         if (this.props.onChangeTheme) {
             this.props.onChangeTheme(event.target.checked);
@@ -92,22 +92,22 @@ class Sidebar extends React.Component {
                             <Typography
                                 className={classes.label}
                                 component="label"
-                                htmlFor="colorMode"
+                                htmlFor="isDarkTheme"
                             >
                                 Light
                             </Typography>
                             <Switch
-                                checked={this.state.colorMode}
+                                checked={this.state.isDarkTheme}
                                 color="primary"
-                                id="colorMode"
+                                id="isDarkTheme"
                                 onChange={this.handleChange.bind(this)}
                                 inputProps={{'aria-label': 'primary checkbox'}}
-                                value="colorMode"
+                                value="isDarkTheme"
                             />
                             <Typography
                                 className={classes.label}
                                 component="label"
-                                htmlFor="colorMode"
+                                htmlFor="isDarkTheme"
                             >
                                 Dark
                             </Typography>
@@ -121,6 +121,7 @@ class Sidebar extends React.Component {
 
 Sidebar.propTypes = {
     onChangeTheme: PropTypes.func,
+    isDarkTheme: PropTypes.bool,
     open: PropTypes.bool
 };
 
