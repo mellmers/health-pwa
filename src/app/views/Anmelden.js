@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { withRouter } from 'react-router-dom';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -13,9 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import API from '../../utils/API';
-import MySnackbar from '../components/MySnackbar';
 
-import {login} from '../../redux/actions/ApplicationActions';
+import {login, snackbar} from '../../redux/actions/ApplicationActions';
 
 const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
@@ -38,18 +36,8 @@ class Anmelden extends React.Component {
         disabled: false,
         email: '',
         password: '',
-        showPassword: false,
-        snackbarMessage: '',
-        snackbarOpen: false,
-        snackbarVariant: 'success'
+        showPassword: false
     };
-
-    handleClose(event, reason) {
-        if (reason === 'clickaway') {
-            return;
-        }
-        this.setState({snackbarOpen: false});
-    }
 
     handleChange(prop, event) {
         this.setState({[prop]: event.target.value});
@@ -69,44 +57,34 @@ class Anmelden extends React.Component {
             email: email,
             password: password
         }).then(result => {
-            let newState = {};
+            let snackbarSettings = {};
 
             if (result.status === 'error') {
-                newState = {
-                    snackbarOpen: true,
-                    snackbarMessage: result.message,
-                    snackbarVariant: 'error'
+                snackbarSettings = {
+                    open: true,
+                    message: 'E-Mail oder Passwort ist falsch',
+                    variant: 'error',
+                    closeBtn: false
                 };
             } else if (result.status === 'success') {
-                newState = {
-                    snackbarOpen: true,
-                    snackbarMessage: 'Erfolgreich eingeloggt!',
-                    snackbarVariant: 'success'
+                snackbarSettings = {
+                    open: true,
+                    message: 'Erfolgreich eingeloggt!',
+                    variant: 'success'
                 };
-
-                this.props.dispatch(login({
-                    ...result.data.user,
-                    expiresIn: result.data.expiresIn,
-                    token: result.data.token
-                }));
-
-                // setTimeout(() => {
-                //     this.props.history.push('/daten');
-                // }, 1500);
+                this.props.dispatch(login(result.data.user));
             } else {
                 console.log('We have a problem here, bro.');
             }
 
-            this.setState({
-                ...newState,
-                disabled: false
-            });
+            this.props.dispatch(snackbar(snackbarSettings));
+            this.setState({disabled: false});
         });
     }
 
     render() {
         const {classes} = this.props;
-        const {disabled, email, password, showPassword, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
+        const {disabled, email, password, showPassword} = this.state;
 
         return (
             <form autoComplete="off" onSubmit={this.onSubmit.bind(this)}>
@@ -147,14 +125,6 @@ class Anmelden extends React.Component {
                     required
                 />
                 <Button type="submit" variant="contained" color="primary" size="large" disabled={disabled}>{disabled ? 'Anmeldung läuft ...' : 'Anmelden'}</Button>
-
-                <MySnackbar
-                    message={snackbarMessage}
-                    onClose={this.handleClose.bind(this)}
-                    open={snackbarOpen}
-                    variant={snackbarVariant}
-                    includeCloseBtn
-                />
             </form>
         );
     }

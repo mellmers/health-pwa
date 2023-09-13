@@ -10,8 +10,6 @@ import SaveIcon from '@material-ui/icons/Save';
 
 import API from "../../utils/API";
 
-import MySnackbar from "../components/MySnackbar";
-
 const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
     button: {
@@ -37,21 +35,11 @@ class Daten extends React.Component {
         fat: '',
         muscle: '',
         visceralFat: '',
-        sendingData: false,
-        snackbarMessage: '',
-        snackbarOpen: false,
-        snackbarVariant: 'success'
+        sendingData: false
     };
 
     handleChange (prop, event) {
         this.setState({[prop]: event.target.value});
-    }
-
-    handleClose(event, reason) {
-        if (reason === 'clickaway') {
-            return;
-        }
-        this.setState({snackbarOpen: false});
     }
 
     onSubmit (event) {
@@ -62,43 +50,39 @@ class Daten extends React.Component {
 
             const {weight, fat, muscle, visceralFat} = this.state;
 
-            API.getInstance()._fetch('/balancedata', 'POST', {
+            API.getInstance().fetch('/balancedata', 'POST', {
                 weight: weight,
                 fat: fat,
                 muscle: muscle,
                 visceralFat: visceralFat
-            }, null, {
-                "Authorization": "Bearer " + this.props.user.token
             }).then(result => {
-                let newState = {};
+                let snackbarSettings = {};
 
                 if (result.status === 'error') {
-                    newState = {
-                        snackbarOpen: true,
-                        snackbarMessage: result.message,
-                        snackbarVariant: 'error'
+                    snackbarSettings = {
+                        open: true,
+                        message: result.message,
+                        variant: 'error'
                     };
                 } else if (result.status === 'success') {
-                    newState = {
-                        snackbarOpen: true,
-                        snackbarMessage: 'Daten gespeichert!',
-                        snackbarVariant: 'success'
+                    snackbarSettings = {
+                        open: true,
+                        message: 'Daten gespeichert!',
+                        variant: 'success'
                     };
                 } else {
                     console.log('We have a problem here, bro.');
                 }
 
-                this.setState({
-                    ...newState,
-                    sendingData: false
-                });
+                this.props.dispatch(snackbar(snackbarSettings));
+                this.setState({sendingData: false});
             });
         } else {
-            this.setState({
-                snackbarOpen: true,
-                snackbarMessage: 'Du musst dich erst einloggen!',
-                snackbarVariant: 'error'
-            });
+            this.props.dispatch(snackbar({
+                open: true,
+                message: 'Du musst dich erst einloggen!',
+                variant: 'error'
+            }));
         }
     }
 
@@ -114,7 +98,7 @@ class Daten extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {disabled, weight, fat, muscle, visceralFat, sendingData, snackbarMessage, snackbarOpen, snackbarVariant} = this.state;
+        const {disabled, weight, fat, muscle, visceralFat, sendingData} = this.state;
 
         let resetBtn = null;
         if (disabled && !sendingData) {
@@ -135,7 +119,7 @@ class Daten extends React.Component {
                     value={weight}
                     onChange={this.handleChange.bind(this, 'weight')}
                     InputProps={{
-                        endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                        endAdornment: <InputAdornment position="end">kg</InputAdornment>,
                     }}
                     type="number"
                     required
@@ -186,15 +170,6 @@ class Daten extends React.Component {
                 </Button>
 
                 {resetBtn}
-
-                <MySnackbar
-                    autoHideDuration={5000}
-                    message={snackbarMessage}
-                    onClose={this.handleClose.bind(this)}
-                    open={snackbarOpen}
-                    variant={snackbarVariant}
-                    includeCloseBtn
-                />
             </form>
         );
     }

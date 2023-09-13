@@ -30,9 +30,7 @@ class Report extends React.Component {
         const {user} = this.props;
 
         if (user) {
-            API.getInstance()._fetch('/users/balancedata', 'GET', null, null, {
-                "Authorization": "Bearer " + user.token
-            }).then(result => {
+            API.getInstance().fetch('/users/balancedata').then(result => {
                 if (result && result.status === "success") {
                     this.setState({ balanceData: result.data.balanceData });
                 }

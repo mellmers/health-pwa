@@ -15,9 +15,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 
+import {login, snackbar} from "../../redux/actions/ApplicationActions";
+
+import API from '../../utils/API';
 import {themeDark, themeLight} from "../../utils/theme";
 
 import Sidebar from '../components/Sidebar';
+import MySnackbar from '../components/MySnackbar';
 import Anmelden from "./Anmelden";
 
 const drawerWidth = 240;
@@ -129,33 +133,53 @@ class Home extends React.Component {
     state = {
         isDarkTheme: true,
         loading: true,
-        open: false
+        drawerOpen: false
     };
 
     componentDidMount() {
-        // if (this.props.location && this.props.location.pathname === "/") {
-        //     this.props.history.push("/dashboard");
-        // }
+        API.createInstance(this.props.dispatch);
 
-        let open = this.state.open;
-        if (window.outerWidth >= 600) {
+        if (this.props.location && this.props.location.pathname === "/") {
+            this.props.history.push("/daten");
+        }
+
+        let open = localStorage.getItem('drawerOpen');
+        if (open !== null) {
+            open = open === 'true';
+        } else if (window.outerWidth >= 600) {
             open = true;
+        } else {
+            open = false;
         }
 
         this.setState({
             isDarkTheme: localStorage.getItem('isDarkTheme') !== 'false',
             loading: false,
-            open: open
+            drawerOpen: open
         });
+
+        let user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            this.props.dispatch(login(user));
+        }
     }
 
     handleDrawerOpen = () => {
-        this.setState({open: true});
+        localStorage.setItem('drawerOpen', 'true');
+        this.setState({drawerOpen: true});
     };
 
     handleDrawerClose = () => {
-        this.setState({open: false});
+        localStorage.setItem('drawerOpen', 'false');
+        this.setState({drawerOpen: false});
     };
+
+    handleSnackbarClose(event, reason) {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.props.dispatch(snackbar({open: false}));
+    }
 
     handleChangeTheme = isDarkTheme => {
         this.setState({isDarkTheme: isDarkTheme});
@@ -163,8 +187,8 @@ class Home extends React.Component {
     };
 
     render() {
-        const {classes, user} = this.props;
-        const {isDarkTheme, loading, open} = this.state;
+        const {classes, user, snackbar} = this.props;
+        const {isDarkTheme, loading, drawerOpen} = this.state;
         return (
             <MuiThemeProvider theme={isDarkTheme ? themeDark : themeLight}>
                 <CssBaseline/>
@@ -187,16 +211,16 @@ class Home extends React.Component {
                             <React.Fragment>
                                 <AppBar
                                     position="absolute"
-                                    className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
+                                    className={classNames(classes.appBar, drawerOpen && classes.appBarShift)}
                                 >
-                                    <Toolbar disableGutters={!this.state.open} className={classes.toolbar}>
+                                    <Toolbar disableGutters={!drawerOpen} className={classes.toolbar}>
                                         <IconButton
                                             color="inherit"
                                             aria-label="Menü"
                                             onClick={this.handleDrawerOpen}
                                             className={classNames(
                                                 classes.menuButton,
-                                                this.state.open && classes.menuButtonHidden,
+                                                drawerOpen && classes.menuButtonHidden,
                                             )}
                                         >
                                             <MenuIcon/>
@@ -215,9 +239,9 @@ class Home extends React.Component {
                                 <Drawer
                                     variant="permanent"
                                     classes={{
-                                        paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+                                        paper: classNames(classes.drawerPaper, !drawerOpen && classes.drawerPaperClose),
                                     }}
-                                    open={this.state.open}
+                                    open={drawerOpen}
                                 >
                                     <div className={classes.toolbarIcon}>
                                         <Typography variant="h6">
@@ -228,13 +252,22 @@ class Home extends React.Component {
                                         </IconButton>
                                     </div>
                                     <Divider/>
-                                    <Sidebar onChangeTheme={this.handleChangeTheme.bind(this)} isDarkTheme={isDarkTheme} open={open} />
+                                    <Sidebar onChangeTheme={this.handleChangeTheme.bind(this)} isDarkTheme={isDarkTheme} open={drawerOpen} />
                                 </Drawer>
                                 <main className={classes.content}>
                                     {renderRoutes(this.props.route.routes)}
                                 </main>
                             </React.Fragment> : <Anmelden/> )
                     }
+
+                    <MySnackbar
+                        autoHideDuration={snackbar.autoHideDuration}
+                        message={snackbar.message}
+                        onClose={this.handleSnackbarClose.bind(this)}
+                        open={snackbar.open}
+                        variant={snackbar.variant}
+                        includeCloseBtn={snackbar.closeBtn}
+                    />
                 </div>
             </MuiThemeProvider>
         );
@@ -245,6 +278,9 @@ Home.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 function mapStateToProps(state) {
-    return { user: state.application.user };
+    return {
+        user: state.application.user,
+        snackbar: state.application.snackbar
+    };
 }
 export default withStyles(styles)(connect(mapStateToProps)(Home));

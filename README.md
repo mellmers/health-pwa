@@ -47,4 +47,4 @@ ReactPWA is a highly scalable, Progressive Web Application foundation, boilerpla
 Visit [ReactPWA](https://www.reactpwa.com) for more configuration & documentation.
 
 ### License
-This project is licensed under the MIT license, Copyright (c) 2019 [Moritz Ellmers](https://moritzellmers.de). For more information see [LICENSE.md](https://github.com/Atyantik/example-pawjs-material-ui/blob/master/LICENSE.md).  
+This project is licensed under the MIT license, Copyright (c) 2023 [Moritz Ellmers](https://moritzellmers.de). For more information see [LICENSE.md](https://github.com/Atyantik/example-pawjs-material-ui/blob/master/LICENSE.md).  

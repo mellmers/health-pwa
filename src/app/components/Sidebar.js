@@ -16,8 +16,11 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import InfoIcon from '@material-ui/icons/Info';
 import InvertedColorsIcon from '@material-ui/icons/InvertColors';
+import {logout} from "../../redux/actions/ApplicationActions";
+import API from "../../utils/API";
 const styles = theme => ({
     label: {
         display: 'inline-block'
@@ -38,19 +41,15 @@ class Sidebar extends React.Component {
         }
     };
 
+    logout = () => {
+        API.getInstance().logout();
+    };
+
     render() {
         const {classes, open, user} = this.props;
         return (
             <React.Fragment>
                 <List>
-                    { open && user && user.name ? (
-                        <ListItem>
-                            <ListItemText
-                                primary="Eingeloggt als:"
-                                secondary={user.name}
-                            />
-                        </ListItem>
-                    ) : null}
                     <ListItem button component={Link} to="/dashboard">
                         <ListItemIcon>
                             <DashboardIcon/>
@@ -78,12 +77,22 @@ class Sidebar extends React.Component {
                 </List>
                 <Divider/>
                 <List>
-                    <ListItem>
-                        <ListItemIcon>
-                            <InfoIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="Version" secondary={process.env.APP_VERSION}/>
-                    </ListItem>
+                    { open && user && user.name ? (
+                        <React.Fragment>
+                            <ListItem>
+                                <ListItemText
+                                    primary="Eingeloggt als:"
+                                    secondary={user.name}
+                                />
+                            </ListItem>
+                            <ListItem button component={Link} to="/dashboard" onClick={this.logout.bind(this)}>
+                                <ListItemIcon>
+                                    <ExitToAppIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Abmelden"/>
+                            </ListItem>
+                        </React.Fragment>
+                    ) : null}
                     <ListItem>
                         <ListItemIcon>
                             <InvertedColorsIcon/>
@@ -112,6 +121,12 @@ class Sidebar extends React.Component {
                                 Dark
                             </Typography>
                         </ListItemText>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon>
+                            <InfoIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="Version" secondary={process.env.APP_VERSION}/>
                     </ListItem>
                 </List>
             </React.Fragment>
