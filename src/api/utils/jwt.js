@@ -1,7 +1,7 @@
-import expressJwt from 'express-jwt';
+import { expressjwt } from 'express-jwt';
 
 export default function jwt() {
-    return expressJwt({ secret: process.env.API_SECRET }).unless({
+    return expressjwt({ secret: process.env.API_SECRET, algorithms: ['HS256'] }).unless({
         path: [
             // public routes that don't require authentication
             '/api/ping',
